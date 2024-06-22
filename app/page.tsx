@@ -2,8 +2,12 @@ import Link from 'next/link'
 
 const pages = [
   {
-    name: 'Мульти фильтр',
+    name: 'Multi Filter',
     url: 'pages/multi-filter',
+  },
+  {
+    name: 'Dropdown',
+    url: 'pages/dropdown',
   },
 ]
 
