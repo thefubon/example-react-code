@@ -165,8 +165,8 @@ const MultiFilter: React.FC = () => {
               />
             )}
             <h3 className="text-lg font-bold mb-2">{product.name}</h3>
-            <p className="text-gray-600 mb-2">Category: {product.category}</p>
-            <p className="text-gray-600 mb-2">Price: ${product.price}</p>
+            <p className="text-gray-600 mb-2">Категория: {product.category}</p>
+            <p className="text-gray-600 mb-2">Стоимость: {product.price} ₽</p>
           </div>
         ))}
       </div>
