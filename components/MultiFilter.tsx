@@ -1,338 +1,130 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useState } from "react";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaAddressCard } from "react-icons/fa6";
 
-import { BsFilterRight, BsThreeDots } from 'react-icons/bs'
-import { FaCheck, FaTimesCircle } from 'react-icons/fa'
-import { IoClose } from 'react-icons/io5'
+// Массив с кнопками категорий
+const categories = [
+  { name: "Category 1", icon: <FaCheckCircle /> },
+  { name: "Category 2", icon: <FaTimesCircle /> },
+  { name: "Category 3", icon: <FaAddressCard /> },
+];
 
-interface Product {
-  id: number
-  name: string
-  category: any
-  price: number
-  image?: string
+// Массив с карточками
+interface Card {
+  id: number;
+  title: string;
+  category: string;
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Новинка!',
-    category: (
-      <>
-        <FaCheck /> Новинка
-      </>
-    ),
-    price: 10,
-    image: '/example.png',
-  },
-  {
-    id: 2,
-    name: 'Хит!',
-    category: (
-      <>
-        <FaCheck /> Хит
-      </>
-    ),
-    price: 15,
-  },
-  {
-    id: 3,
-    name: 'Выгодно!',
-    category: (
-      <>
-        <FaCheck /> Выгодно
-      </>
-    ),
-    price: 20,
-  },
-  {
-    id: 4,
-    name: 'Здоровье',
-    category: (
-      <>
-        <FaCheck /> Здоровье
-      </>
-    ),
-    price: 25,
-  },
-  {
-    id: 5,
-    name: 'Красота',
-    category: (
-      <>
-        <FaCheck /> Красота
-      </>
-    ),
-    price: 30,
-  },
-  {
-    id: 6,
-    name: 'Рестораны',
-    category: (
-      <>
-        <FaCheck /> Рестораны
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 7,
-    name: 'Одежда и обувь',
-    category: (
-      <>
-        <FaCheck /> Одежда и обувь
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 8,
-    name: 'Всё для дома',
-    category: (
-      <>
-        <FaCheck /> Всё для дома
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 9,
-    name: 'Авто',
-    category: (
-      <>
-        <FaCheck /> Авто
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 10,
-    name: 'Подарки',
-    category: (
-      <>
-        <FaCheck /> Подарки
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 11,
-    name: 'Путешествия',
-    category: (
-      <>
-        <FaCheck /> Путешествия
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 12,
-    name: 'Развлечения',
-    category: (
-      <>
-        <FaCheck /> Развлечения
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 13,
-    name: 'Финансы',
-    category: (
-      <>
-        <FaCheck /> Финансы
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 14,
-    name: 'Карьера и образование',
-    category: (
-      <>
-        <FaCheck /> Карьера и образование
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 15,
-    name: 'Страхование',
-    category: (
-      <>
-        <FaCheck /> Страхование
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 16,
-    name: 'Маркетплейс',
-    category: (
-      <>
-        <FaCheck /> Маркетплейс
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 17,
-    name: 'Техника',
-    category: (
-      <>
-        <FaCheck /> Техника
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 18,
-    name: 'Для детей',
-    category: (
-      <>
-        <FaCheck /> Для детей
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 19,
-    name: 'Доставка еды',
-    category: (
-      <>
-        <FaCheck /> Доставка еды
-      </>
-    ),
-    price: 35,
-  },
-  {
-    id: 20,
-    name: 'Другое',
-    category: (
-      <>
-        <FaCheck /> Другое
-      </>
-    ),
-    price: 35,
-  },
-]
+const cards: Card[] = [
+  { id: 1, title: "Card 1", category: "Category 1" },
+  { id: 2, title: "Card 2", category: "Category 1" },
+  { id: 3, title: "Card 3", category: "Category 1" },
+  { id: 4, title: "Card 4", category: "Category 2" },
+  { id: 5, title: "Card 5", category: "Category 3" },
+  { id: 6, title: "Card 6", category: "Category 3" },
+];
 
 const MultiFilter: React.FC = () => {
-  const [selectedProducts, setSelectedProducts] = useState<number[]>([])
-  const [showAllCategories, setShowAllCategories] = useState(false)
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortDirection, setSortDirection] = useState("asc");
 
-  // Добавление #хеш в URL запрос
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
-  useEffect(() => {
-    // Получаем выбранные продукты из URL
-    const initialProducts = searchParams.getAll('cat')
-    setSelectedProducts(initialProducts.map(Number))
-  }, [searchParams])
-
-  useEffect(() => {
-    // Обновляем URL при изменении выбранных продуктов
-    const url = new URL(`${pathname}#`, window.location.origin)
-    const productParams = new URLSearchParams(url.search)
-    selectedProducts.forEach((productId) =>
-      productParams.append('cat', productId.toString())
-    )
-    router.replace(`${url.pathname}?${productParams.toString()}`)
-  }, [selectedProducts, pathname, router])
-
-  const toggleProduct = (productId: number) => {
-    if (selectedProducts.includes(productId)) {
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId))
+  // Функция для добавления/удаления категории из списка выбранных
+  const handleCategoryClick = (category: string) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(
+        selectedCategories.filter((cat) => cat !== category),
+      );
     } else {
-      setSelectedProducts([...selectedProducts, productId])
+      setSelectedCategories([...selectedCategories, category]);
     }
-  }
+  };
 
-  const filteredProducts = selectedProducts.length
-    ? products.filter((cat) => selectedProducts.includes(cat.id))
-    : products
+  // Функция для сброса всех выбранных категорий
+  const handleResetCategories = () => {
+    setSelectedCategories([]);
+  };
 
-  const handleResetProducts = () => {
-    setSelectedProducts([])
-    router.replace(pathname)
-  }
+  // Функция для фильтрации карточек по категориям и поиску
+  const filteredCards = cards.filter(
+    (card) =>
+      (selectedCategories.length === 0 ||
+        selectedCategories.includes(card.category)) &&
+      card.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  const handleShowAllCategories = () => {
-    setShowAllCategories(!showAllCategories)
-  }
+  // Функция для сортировки карточек по алфавиту
+  const sortedCards = filteredCards.sort((a, b) => {
+    if (a.title < b.title) return sortDirection === "asc" ? -1 : 1;
+    if (a.title > b.title) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
 
-  const categoryButtons = [...new Set(products.map((cat) => cat.category))]
+  // Функция для обработки ввода в поле поиска
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Функция для переключения направления сортировки
+  const handleSortDirectionChange = () => {
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
+  // Добавьте этот код, чтобы скрыть кнопку "Сбросить", когда категория не выбрана
+  const isResetButtonVisible = selectedCategories.length > 0;
 
   return (
     <div className="space-y-6">
-      <div className="mb-4 flex items-center gap-4">
-        <div className="flex flex-wrap gap-4">
-          {categoryButtons
-            .slice(0, showAllCategories ? categoryButtons.length : 16)
-            .map((category, productId) => (
-              <button
-                key={category}
-                className={`px-4 py-2 rounded-md flex items-center gap-1 ${
-                  selectedProducts.includes(productId)
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-700'
-                }`}
-                onClick={() => toggleProduct(productId)}>
-                {selectedProducts.includes(productId) && (
-                  <FaTimesCircle className="mr-2" />
-                )}
-                {category}
-              </button>
-            ))}
+      <div className="flex items-center gap-x-4">
+        <input
+          type="text"
+          placeholder="Поиск..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="mr-4 rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring"
+        />
+        <button
+          onClick={handleSortDirectionChange}
+          className="mr-4 rounded-md bg-gray-200 px-3 py-2 hover:bg-gray-300"
+        >
+          Сортировка {sortDirection === "asc" ? "▲" : "▼"}
+        </button>
 
+        {categories.map((category, index) => (
           <button
-            className="px-4 py-2 rounded-full bg-gray-200 text-gray-700"
-            onClick={handleShowAllCategories}>
-            {showAllCategories ? (
-              <IoClose size={24} />
-            ) : (
-              <BsThreeDots size={24} />
-            )}
+            key={index}
+            onClick={() => handleCategoryClick(category.name)}
+            className={`rounded-md px-4 py-2 ${
+              selectedCategories.includes(category.name)
+                ? "bg-green-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            } flex items-center gap-x-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
+          >
+            {category.icon}
+            {category.name}
           </button>
+        ))}
 
-          {selectedProducts.length > 0 && (
-            <button
-              className="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
-              onClick={handleResetProducts}>
-              <BsFilterRight className="inline-block mr-2" />
-              Сбросить все
-            </button>
-          )}
-        </div>
+        {isResetButtonVisible && (
+          <button onClick={handleResetCategories}>Сбросить</button>
+        )}
       </div>
-
-      <div className="grid grid-cols-4 gap-6">
-        {filteredProducts.slice(0, 12).map((product) => (
+      <div className="grid grid-cols-4 gap-4">
+        {sortedCards.map((card) => (
           <div
-            key={product.id}
-            className="bg-white shadow-md rounded-md p-4">
-            {product.image && (
-              <Image
-                src={product.image}
-                width={100}
-                height={100}
-                alt={product.name}
-                className="w-10 h-10"
-              />
-            )}
-            <h3 className="text-lg font-bold mb-2">{product.name}</h3>
-            <p className="text-gray-600 mb-2">Категория: {product.category}</p>
-            <p className="text-gray-600 mb-2">Стоимость: {product.price} ₽</p>
+            key={card.id}
+            className="rounded-lg border bg-white p-4 transition-shadow duration-300 hover:shadow-lg"
+          >
+            <h3 className="mb-2 text-lg font-bold">{card.title}</h3>
+            <p className="text-gray-600">Category: {card.category}</p>
           </div>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MultiFilter
+export default MultiFilter;
