@@ -13,7 +13,7 @@ interface Product {
   name: string
   category: any
   price: number
-  image?: any
+  image?: string
 }
 
 const products: Product[] = [
