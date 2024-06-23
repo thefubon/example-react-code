@@ -6,6 +6,10 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 
 import { Suspense } from 'react'
 
+function SearchBarFallback() {
+  return <>Загрузка...</>
+}
+
 import { BsFilterRight, BsThreeDots } from 'react-icons/bs'
 import { FaCheck, FaTimesCircle } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
@@ -175,8 +179,8 @@ const MultiFilter: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <Suspense>
-          {filteredProducts.map((product) => (
+        {filteredProducts.map((product) => (
+          <Suspense fallback={<SearchBarFallback />}>
             <div
               key={product.id}
               className="bg-white shadow-md rounded-md p-4">
@@ -195,8 +199,8 @@ const MultiFilter: React.FC = () => {
               </p>
               <p className="text-gray-600 mb-2">Стоимость: {product.price} ₽</p>
             </div>
-          ))}
-        </Suspense>
+          </Suspense>
+        ))}
       </div>
     </div>
   )
