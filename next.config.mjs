@@ -4,7 +4,12 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
-    domains: ['site.prod.cdn.gazprombonus.ru'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'site.prod.cdn.gazprombonus.ru',
+      },
+    ],
   },
 }
 

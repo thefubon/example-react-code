@@ -18,7 +18,7 @@ interface Product {
 
 const products: Product[] = [
   {
-    id: 1,
+    id: 0,
     name: 'Новинка!',
     category: (
       <>
@@ -29,7 +29,7 @@ const products: Product[] = [
     image: '/example.png',
   },
   {
-    id: 2,
+    id: 1,
     name: 'Хит!',
     category: (
       <>
@@ -39,7 +39,7 @@ const products: Product[] = [
     price: 15,
   },
   {
-    id: 3,
+    id: 2,
     name: 'Выгодно!',
     category: (
       <>
@@ -49,7 +49,7 @@ const products: Product[] = [
     price: 20,
   },
   {
-    id: 4,
+    id: 3,
     name: 'Здоровье',
     category: (
       <>
@@ -59,7 +59,7 @@ const products: Product[] = [
     price: 25,
   },
   {
-    id: 5,
+    id: 4,
     name: 'Красота',
     category: (
       <>
@@ -69,7 +69,7 @@ const products: Product[] = [
     price: 30,
   },
   {
-    id: 6,
+    id: 5,
     name: 'Рестораны',
     category: (
       <>
@@ -79,7 +79,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 7,
+    id: 6,
     name: 'Одежда и обувь',
     category: (
       <>
@@ -89,7 +89,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 8,
+    id: 7,
     name: 'Всё для дома',
     category: (
       <>
@@ -99,7 +99,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 9,
+    id: 8,
     name: 'Авто',
     category: (
       <>
@@ -109,7 +109,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 10,
+    id: 9,
     name: 'Подарки',
     category: (
       <>
@@ -119,7 +119,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 11,
+    id: 10,
     name: 'Путешествия',
     category: (
       <>
@@ -129,7 +129,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 12,
+    id: 11,
     name: 'Развлечения',
     category: (
       <>
@@ -139,7 +139,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 13,
+    id: 12,
     name: 'Финансы',
     category: (
       <>
@@ -149,7 +149,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 14,
+    id: 13,
     name: 'Карьера и образование',
     category: (
       <>
@@ -159,7 +159,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 15,
+    id: 14,
     name: 'Страхование',
     category: (
       <>
@@ -169,7 +169,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 16,
+    id: 15,
     name: 'Маркетплейс',
     category: (
       <>
@@ -179,7 +179,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 17,
+    id: 16,
     name: 'Техника',
     category: (
       <>
@@ -189,7 +189,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 18,
+    id: 17,
     name: 'Для детей',
     category: (
       <>
@@ -199,7 +199,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 19,
+    id: 18,
     name: 'Доставка еды',
     category: (
       <>
@@ -209,7 +209,7 @@ const products: Product[] = [
     price: 35,
   },
   {
-    id: 20,
+    id: 19,
     name: 'Другое',
     category: (
       <>
@@ -224,24 +224,25 @@ const MultiFilter: React.FC = () => {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([])
   const [showAllCategories, setShowAllCategories] = useState(false)
 
-  // Добавление #хеш в URL запрос
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
   useEffect(() => {
-    // Получаем выбранные продукты из URL
-    const initialProducts = searchParams.getAll('cat')
-    setSelectedProducts(initialProducts.map(Number))
+    const initialProducts: string = searchParams.get('cat') || ''
+    if (initialProducts) {
+      setSelectedProducts(initialProducts.split('-').map(Number))
+    }
   }, [searchParams])
 
   useEffect(() => {
-    // Обновляем URL при изменении выбранных продуктов
-    const url = new URL(`${pathname}#`, window.location.origin)
+    const url = new URL(`${pathname}`, window.location.origin)
     const productParams = new URLSearchParams(url.search)
-    selectedProducts.forEach((productId) =>
-      productParams.append('cat', productId.toString())
-    )
+    if (selectedProducts.length > 0) {
+      productParams.set('cat', encodeURIComponent(selectedProducts.join('-')))
+    } else {
+      productParams.delete('cat')
+    }
     router.replace(`${url.pathname}?${productParams.toString()}`)
   }, [selectedProducts, pathname, router])
 
