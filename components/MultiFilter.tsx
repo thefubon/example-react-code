@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import React, { useState } from 'react'
 import { BsFilterRight } from 'react-icons/bs'
 import { FaCheck, FaTimesCircle } from 'react-icons/fa'
@@ -9,6 +10,7 @@ interface Product {
   name: string
   category: React.ReactNode
   price: number
+  image?: any
 }
 
 const products: Product[] = [
@@ -21,6 +23,7 @@ const products: Product[] = [
       </>
     ),
     price: 10,
+    image: '/example.png',
   },
   {
     id: 2,
@@ -76,6 +79,7 @@ const products: Product[] = [
 
 const MultiFilter: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [showAllCategories, setShowAllCategories] = useState(false)
 
   const toggleCategory = (category: string) => {
     if (selectedCategories.includes(category)) {
@@ -95,6 +99,14 @@ const MultiFilter: React.FC = () => {
     setSelectedCategories([])
   }
 
+  const handleShowAllCategories = () => {
+    setShowAllCategories(!showAllCategories)
+  }
+
+  const categoryButtons = [
+    ...new Set(products.map((product) => product.category as string)),
+  ]
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
@@ -102,23 +114,30 @@ const MultiFilter: React.FC = () => {
       <div className="mb-4 flex items-center gap-2">
         <h3 className="text-lg font-bold mb-2">Filter by Category</h3>
         <div className="flex flex-wrap gap-2">
-          {[
-            ...new Set(products.map((product) => product.category as string)),
-          ].map((category) => (
+          {categoryButtons
+            .slice(0, showAllCategories ? categoryButtons.length : 5)
+            .map((category) => (
+              <button
+                key={category}
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  selectedCategories.includes(category)
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700'
+                } `}
+                onClick={() => toggleCategory(category)}>
+                {selectedCategories.includes(category) && (
+                  <FaTimesCircle className="mr-2" />
+                )}
+                {category}
+              </button>
+            ))}
+          {categoryButtons.length > 5 && (
             <button
-              key={category}
-              className={`px-4 py-2 rounded-md flex items-center ${
-                selectedCategories.includes(category)
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-              onClick={() => toggleCategory(category)}>
-              {selectedCategories.includes(category) && (
-                <FaTimesCircle className="mr-2" />
-              )}
-              {category}
+              className="px-4 py-2 rounded-md bg-gray-200 text-gray-700"
+              onClick={handleShowAllCategories}>
+              {showAllCategories ? 'Показать меньше' : 'Показать все'}
             </button>
-          ))}
+          )}
         </div>
 
         {selectedCategories.length > 0 && (
@@ -136,6 +155,15 @@ const MultiFilter: React.FC = () => {
           <div
             key={product.id}
             className="bg-white shadow-md rounded-md p-4">
+            {product.image && (
+              <Image
+                src={product.image}
+                width={100}
+                height={100}
+                alt={product.name}
+                className="w-10 h-10"
+              />
+            )}
             <h3 className="text-lg font-bold mb-2">{product.name}</h3>
             <p className="text-gray-600 mb-2">Category: {product.category}</p>
             <p className="text-gray-600 mb-2">Price: ${product.price}</p>

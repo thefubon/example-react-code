@@ -13,18 +13,16 @@ const pages = [
 
 export default function Home() {
   return (
-    <div className="container p-12">
-      <div className="grid gap-4">
-        {pages.map((item, idx) => {
-          return (
-            <Link
-              key={idx}
-              href={item.url}>
-              {item.name}
-            </Link>
-          )
-        })}
-      </div>
+    <div className="grid gap-4">
+      {pages.map((item, idx) => {
+        return (
+          <Link
+            key={idx}
+            href={item.url}>
+            {item.name}
+          </Link>
+        )
+      })}
     </div>
   )
 }
