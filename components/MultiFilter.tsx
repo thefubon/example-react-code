@@ -28,16 +28,33 @@ const cards: Card[] = [
 ];
 
 const MultiFilter: React.FC = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
-  // Функция для добавления/удаления категории из списка выбранных
-  const handleCategoryClick = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((cat) => cat !== category),
-      );
+  // Добавление #хеш в URL запрос
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Получаем выбранные продукты из URL
+    const initialProducts = searchParams.getAll("cat");
+    setSelectedProducts(initialProducts.map(Number));
+  }, [searchParams]);
+
+  useEffect(() => {
+    // Обновляем URL при изменении выбранных продуктов
+    const url = new URL(`${pathname}#`, window.location.origin);
+    const productParams = new URLSearchParams(url.search);
+    selectedProducts.forEach((productId) =>
+      productParams.append("cat", productId.toString()),
+    );
+    router.replace(`${url.pathname}?${productParams.toString()}`);
+  }, [selectedProducts, pathname, router]);
+
+  const toggleProduct = (productId: number) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
