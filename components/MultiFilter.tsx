@@ -180,10 +180,10 @@ const MultiFilter: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
-          <Suspense fallback={<SearchBarFallback />}>
-            <div
-              key={product.id}
-              className="bg-white shadow-md rounded-md p-4">
+          <Suspense
+            key={product.id}
+            fallback={<SearchBarFallback />}>
+            <div className="bg-white shadow-md rounded-md p-4">
               {product.image && (
                 <Image
                   src={product.image}
