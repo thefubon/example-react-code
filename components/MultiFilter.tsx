@@ -17,7 +17,7 @@ import { IoClose } from 'react-icons/io5'
 interface Product {
   id: number
   name: string
-  category: React.ReactNode
+  category: any
   price: number
   image?: any
 }
@@ -142,7 +142,7 @@ const MultiFilter: React.FC = () => {
             .slice(0, showAllCategories ? categoryButtons.length : 5)
             .map((category, productId) => (
               <button
-                key={productId}
+                key={category}
                 className={`px-4 py-2 rounded-md flex items-center gap-1 ${
                   selectedProducts.includes(productId)
                     ? 'bg-blue-500 text-white'
