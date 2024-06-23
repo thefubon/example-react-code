@@ -78,6 +78,146 @@ const products: Product[] = [
     ),
     price: 35,
   },
+  {
+    id: 7,
+    name: 'Одежда и обувь',
+    category: (
+      <>
+        <FaCheck /> Одежда и обувь
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 8,
+    name: 'Всё для дома',
+    category: (
+      <>
+        <FaCheck /> Всё для дома
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 9,
+    name: 'Авто',
+    category: (
+      <>
+        <FaCheck /> Авто
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 10,
+    name: 'Подарки',
+    category: (
+      <>
+        <FaCheck /> Подарки
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 11,
+    name: 'Путешествия',
+    category: (
+      <>
+        <FaCheck /> Путешествия
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 12,
+    name: 'Развлечения',
+    category: (
+      <>
+        <FaCheck /> Развлечения
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 13,
+    name: 'Финансы',
+    category: (
+      <>
+        <FaCheck /> Финансы
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 14,
+    name: 'Карьера и образование',
+    category: (
+      <>
+        <FaCheck /> Карьера и образование
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 15,
+    name: 'Страхование',
+    category: (
+      <>
+        <FaCheck /> Страхование
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 16,
+    name: 'Маркетплейс',
+    category: (
+      <>
+        <FaCheck /> Маркетплейс
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 17,
+    name: 'Техника',
+    category: (
+      <>
+        <FaCheck /> Техника
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 18,
+    name: 'Для детей',
+    category: (
+      <>
+        <FaCheck /> Для детей
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 19,
+    name: 'Доставка еды',
+    category: (
+      <>
+        <FaCheck /> Доставка еды
+      </>
+    ),
+    price: 35,
+  },
+  {
+    id: 20,
+    name: 'Другое',
+    category: (
+      <>
+        <FaCheck /> Другое
+      </>
+    ),
+    price: 35,
+  },
 ]
 
 const MultiFilter: React.FC = () => {
@@ -129,11 +269,11 @@ const MultiFilter: React.FC = () => {
   const categoryButtons = [...new Set(products.map((cat) => cat.category))]
 
   return (
-    <div className="p-4">
-      <div className="mb-4 flex items-center gap-2">
-        <div className="flex flex-wrap gap-2">
+    <div className="space-y-6">
+      <div className="mb-4 flex items-center gap-4">
+        <div className="flex flex-wrap gap-4">
           {categoryButtons
-            .slice(0, showAllCategories ? categoryButtons.length : 5)
+            .slice(0, showAllCategories ? categoryButtons.length : 16)
             .map((category, productId) => (
               <button
                 key={category}
@@ -171,8 +311,8 @@ const MultiFilter: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
-        {filteredProducts.map((product) => (
+      <div className="grid grid-cols-4 gap-6">
+        {filteredProducts.slice(0, 12).map((product) => (
           <div
             key={product.id}
             className="bg-white shadow-md rounded-md p-4">
