@@ -18,7 +18,7 @@ interface Product {
 
 const products: Product[] = [
   {
-    id: 0,
+    id: 1,
     name: 'Новинка!',
     category: (
       <>
@@ -29,7 +29,7 @@ const products: Product[] = [
     image: '/example.png',
   },
   {
-    id: 1,
+    id: 2,
     name: 'Хит!',
     category: (
       <>
@@ -39,7 +39,7 @@ const products: Product[] = [
     price: 15,
   },
   {
-    id: 2,
+    id: 3,
     name: 'Выгодно!',
     category: (
       <>
@@ -49,7 +49,7 @@ const products: Product[] = [
     price: 20,
   },
   {
-    id: 3,
+    id: 4,
     name: 'Здоровье',
     category: (
       <>
@@ -59,7 +59,7 @@ const products: Product[] = [
     price: 25,
   },
   {
-    id: 4,
+    id: 5,
     name: 'Красота',
     category: (
       <>
@@ -69,7 +69,7 @@ const products: Product[] = [
     price: 30,
   },
   {
-    id: 5,
+    id: 6,
     name: 'Рестораны',
     category: (
       <>
@@ -149,17 +149,16 @@ const MultiFilter: React.FC = () => {
                 {category}
               </button>
             ))}
-          {categoryButtons.length > 5 && (
-            <button
-              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700"
-              onClick={handleShowAllCategories}>
-              {showAllCategories ? (
-                <IoClose size={24} />
-              ) : (
-                <BsThreeDots size={24} />
-              )}
-            </button>
-          )}
+
+          <button
+            className="px-4 py-2 rounded-full bg-gray-200 text-gray-700"
+            onClick={handleShowAllCategories}>
+            {showAllCategories ? (
+              <IoClose size={24} />
+            ) : (
+              <BsThreeDots size={24} />
+            )}
+          </button>
         </div>
 
         {selectedProducts.length > 0 && (

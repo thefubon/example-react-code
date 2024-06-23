@@ -5,10 +5,6 @@ const pages = [
     name: 'Multi Filter',
     url: 'pages/multi-filter',
   },
-  {
-    name: 'Dropdown',
-    url: 'pages/dropdown',
-  },
 ]
 
 export default function Home() {
