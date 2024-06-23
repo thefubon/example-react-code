@@ -4,6 +4,8 @@ import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 
+import { Suspense } from 'react'
+
 import { BsFilterRight, BsThreeDots } from 'react-icons/bs'
 import { FaCheck, FaTimesCircle } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
@@ -173,24 +175,28 @@ const MultiFilter: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filteredProducts.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white shadow-md rounded-md p-4">
-            {product.image && (
-              <Image
-                src={product.image}
-                width={100}
-                height={100}
-                alt={product.name}
-                className="w-10 h-10"
-              />
-            )}
-            <h3 className="text-lg font-bold mb-2">{product.name}</h3>
-            <p className="text-gray-600 mb-2">Категория: {product.category}</p>
-            <p className="text-gray-600 mb-2">Стоимость: {product.price} ₽</p>
-          </div>
-        ))}
+        <Suspense>
+          {filteredProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-white shadow-md rounded-md p-4">
+              {product.image && (
+                <Image
+                  src={product.image}
+                  width={100}
+                  height={100}
+                  alt={product.name}
+                  className="w-10 h-10"
+                />
+              )}
+              <h3 className="text-lg font-bold mb-2">{product.name}</h3>
+              <p className="text-gray-600 mb-2">
+                Категория: {product.category}
+              </p>
+              <p className="text-gray-600 mb-2">Стоимость: {product.price} ₽</p>
+            </div>
+          ))}
+        </Suspense>
       </div>
     </div>
   )
