@@ -1,33 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import { FaAddressCard } from "react-icons/fa6";
 
-// Массив с кнопками категорий
-const categories = [
-  { name: "Category 1", icon: <FaCheckCircle /> },
-  { name: "Category 2", icon: <FaTimesCircle /> },
-  { name: "Category 3", icon: <FaAddressCard /> },
-];
+interface CategoryItem {
+  name: string;
+  icon: React.ReactNode;
+}
 
-// Массив с карточками
 interface Card {
   id: number;
   title: string;
   category: string;
 }
 
-const cards: Card[] = [
-  { id: 1, title: "Card 1", category: "Category 1" },
-  { id: 2, title: "Card 2", category: "Category 1" },
-  { id: 3, title: "Card 3", category: "Category 1" },
-  { id: 4, title: "Card 4", category: "Category 2" },
-  { id: 5, title: "Card 5", category: "Category 3" },
-  { id: 6, title: "Card 6", category: "Category 3" },
-];
+interface MultiFilterProps {
+  categories: CategoryItem[];
+  cards: Card[];
+}
 
-const MultiFilter: React.FC = () => {
+const MultiFilter: React.FC<MultiFilterProps> = ({ categories, cards }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
