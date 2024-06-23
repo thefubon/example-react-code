@@ -1,7 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+
 import { BsFilterRight, BsThreeDots } from 'react-icons/bs'
 import { FaCheck, FaTimesCircle } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
@@ -16,62 +18,62 @@ interface Product {
 
 const products: Product[] = [
   {
-    id: 1,
-    name: 'Product 1',
+    id: 0,
+    name: 'Новинка!',
     category: (
       <>
-        <FaCheck /> Category A
+        <FaCheck /> Новинка
       </>
     ),
     price: 10,
     image: '/example.png',
   },
   {
-    id: 2,
-    name: 'Product 2',
+    id: 1,
+    name: 'Хит!',
     category: (
       <>
-        <FaCheck /> Category A
+        <FaCheck /> Хит
       </>
     ),
     price: 15,
   },
   {
-    id: 3,
-    name: 'Product 3',
+    id: 2,
+    name: 'Выгодно!',
     category: (
       <>
-        <FaCheck /> Category B
+        <FaCheck /> Выгодно
       </>
     ),
     price: 20,
   },
   {
-    id: 4,
-    name: 'Product 4',
+    id: 3,
+    name: 'Здоровье',
     category: (
       <>
-        <FaCheck /> Category B
+        <FaCheck /> Здоровье
       </>
     ),
     price: 25,
   },
   {
-    id: 5,
-    name: 'Product 5',
+    id: 4,
+    name: 'Красота',
     category: (
       <>
-        <FaCheck /> Category C
+        <FaCheck /> Красота
       </>
     ),
     price: 30,
   },
   {
-    id: 6,
-    name: 'Product 6',
+    id: 5,
+    name: 'Рестораны',
     category: (
       <>
-        <FaCheck /> Category C
+        <FaCheck /> Рестораны
       </>
     ),
     price: 35,
@@ -79,34 +81,52 @@ const products: Product[] = [
 ]
 
 const MultiFilter: React.FC = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([])
   const [showAllCategories, setShowAllCategories] = useState(false)
 
-  const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
+  // Добавление #хеш в URL запрос
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  useEffect(() => {
+    // Получаем выбранные продукты из URL
+    const initialProducts = searchParams.getAll('cat')
+    setSelectedProducts(initialProducts.map(Number))
+  }, [searchParams])
+
+  useEffect(() => {
+    // Обновляем URL при изменении выбранных продуктов
+    const url = new URL(`${pathname}#`, window.location.origin)
+    const productParams = new URLSearchParams(url.search)
+    selectedProducts.forEach((productId) =>
+      productParams.append('cat', productId.toString())
+    )
+    router.replace(`${url.pathname}?${productParams.toString()}`)
+  }, [selectedProducts, pathname, router])
+
+  const toggleProduct = (productId: number) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId))
     } else {
-      setSelectedCategories([...selectedCategories, category])
+      setSelectedProducts([...selectedProducts, productId])
     }
   }
 
-  const filteredProducts = selectedCategories.length
-    ? products.filter((product) =>
-        selectedCategories.includes(product.category as string)
-      )
+  const filteredProducts = selectedProducts.length
+    ? products.filter((cat) => selectedProducts.includes(cat.id))
     : products
 
-  const handleResetCategories = () => {
-    setSelectedCategories([])
+  const handleResetProducts = () => {
+    setSelectedProducts([])
+    router.replace(pathname)
   }
 
   const handleShowAllCategories = () => {
     setShowAllCategories(!showAllCategories)
   }
 
-  const categoryButtons = [
-    ...new Set(products.map((product) => product.category as string)),
-  ]
+  const categoryButtons = [...new Set(products.map((cat) => cat.category))]
 
   return (
     <div className="p-4">
@@ -114,16 +134,16 @@ const MultiFilter: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           {categoryButtons
             .slice(0, showAllCategories ? categoryButtons.length : 5)
-            .map((category) => (
+            .map((category, productId) => (
               <button
-                key={category}
-                className={`px-4 py-2 rounded-md flex items-center ${
-                  selectedCategories.includes(category)
+                key={productId}
+                className={`px-4 py-2 rounded-md flex items-center gap-1 ${
+                  selectedProducts.includes(productId)
                     ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700'
-                } `}
-                onClick={() => toggleCategory(category)}>
-                {selectedCategories.includes(category) && (
+                }`}
+                onClick={() => toggleProduct(productId)}>
+                {selectedProducts.includes(productId) && (
                   <FaTimesCircle className="mr-2" />
                 )}
                 {category}
@@ -133,15 +153,19 @@ const MultiFilter: React.FC = () => {
             <button
               className="px-4 py-2 rounded-full bg-gray-200 text-gray-700"
               onClick={handleShowAllCategories}>
-              {showAllCategories ? <IoClose /> : <BsThreeDots />}
+              {showAllCategories ? (
+                <IoClose size={24} />
+              ) : (
+                <BsThreeDots size={24} />
+              )}
             </button>
           )}
         </div>
 
-        {selectedCategories.length > 0 && (
+        {selectedProducts.length > 0 && (
           <button
             className="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
-            onClick={handleResetCategories}>
+            onClick={handleResetProducts}>
             <BsFilterRight className="inline-block mr-2" />
             Сбросить все
           </button>
