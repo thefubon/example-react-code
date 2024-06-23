@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import React, { useState } from 'react'
-import { BsFilterRight } from 'react-icons/bs'
+import { BsFilterRight, BsThreeDots } from 'react-icons/bs'
 import { FaCheck, FaTimesCircle } from 'react-icons/fa'
+import { IoClose } from 'react-icons/io5'
 
 interface Product {
   id: number
@@ -109,10 +110,7 @@ const MultiFilter: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Products</h2>
-
       <div className="mb-4 flex items-center gap-2">
-        <h3 className="text-lg font-bold mb-2">Filter by Category</h3>
         <div className="flex flex-wrap gap-2">
           {categoryButtons
             .slice(0, showAllCategories ? categoryButtons.length : 5)
@@ -133,9 +131,9 @@ const MultiFilter: React.FC = () => {
             ))}
           {categoryButtons.length > 5 && (
             <button
-              className="px-4 py-2 rounded-md bg-gray-200 text-gray-700"
+              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700"
               onClick={handleShowAllCategories}>
-              {showAllCategories ? 'Показать меньше' : 'Показать все'}
+              {showAllCategories ? <IoClose /> : <BsThreeDots />}
             </button>
           )}
         </div>
