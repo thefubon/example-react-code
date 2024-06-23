@@ -159,19 +159,19 @@ const MultiFilter: React.FC = () => {
               <BsThreeDots size={24} />
             )}
           </button>
-        </div>
 
-        {selectedProducts.length > 0 && (
-          <button
-            className="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
-            onClick={handleResetProducts}>
-            <BsFilterRight className="inline-block mr-2" />
-            Сбросить все
-          </button>
-        )}
+          {selectedProducts.length > 0 && (
+            <button
+              className="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
+              onClick={handleResetProducts}>
+              <BsFilterRight className="inline-block mr-2" />
+              Сбросить все
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
           <div
             key={product.id}
