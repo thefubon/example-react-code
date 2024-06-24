@@ -1,45 +1,70 @@
 "use client";
 
+import { FaAddressCard, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 
-interface CategoryItem {
-  name: string;
-  icon: React.ReactNode;
-}
+// Массив с кнопками категорий
+const categories = [
+  { name: "Категория 1", icon: <FaCheckCircle /> },
+  { name: "Категория 2", icon: <FaTimesCircle /> },
+  { name: "Категория 3", icon: <FaAddressCard /> },
+];
 
+// Массив с карточками
 interface Card {
   id: number;
   title: string;
   category: string;
 }
 
-interface MultiFilterProps {
-  categories: CategoryItem[];
-  cards: Card[];
-}
+const cards: Card[] = [
+  { id: 1, title: "Card 1", category: "Категория 1" },
+  { id: 2, title: "Card 2", category: "Категория 1" },
+  { id: 3, title: "Card 3", category: "Категория 1" },
+  { id: 4, title: "Card 4", category: "Категория 2" },
+  { id: 5, title: "Card 5", category: "Категория 3" },
+  { id: 6, title: "Card 6", category: "Категория 3" },
+];
 
-const MultiFilter: React.FC<MultiFilterProps> = ({ categories, cards }) => {
+const MultiFilter: React.FC = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // Функция для добавления/удаления категории из списка выбранных
   const handleCategoryClick = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((cat) => cat !== category),
+    let newSelectedCategories = [...selectedCategories];
+    if (newSelectedCategories.includes(category)) {
+      newSelectedCategories = newSelectedCategories.filter(
+        (cat) => cat !== category,
       );
     } else {
-      setSelectedCategories([...selectedCategories, category]);
+      newSelectedCategories.push(category);
     }
+
+    setSelectedCategories(newSelectedCategories);
+    updateURL(newSelectedCategories);
   };
 
-  // Функция для сброса всех выбранных категорий
   const handleResetCategories = () => {
     setSelectedCategories([]);
+    updateURL([]);
   };
 
-  // Функция для фильтрации карточек по категориям и поиску
+  const updateURL = (newSelectedCategories: string[]) => {
+    const searchString = newSelectedCategories
+      .map(
+        (category) =>
+          `cat-${cards.find((card) => card.category === category)?.id}`,
+      )
+      .join(",");
+    const newURL = `${pathname}?${searchString}`;
+    router.push(newURL);
+  };
+
   const filteredCards = cards.filter(
     (card) =>
       (selectedCategories.length === 0 ||
@@ -47,24 +72,20 @@ const MultiFilter: React.FC<MultiFilterProps> = ({ categories, cards }) => {
       card.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // Функция для сортировки карточек по алфавиту
   const sortedCards = filteredCards.sort((a, b) => {
     if (a.title < b.title) return sortDirection === "asc" ? -1 : 1;
     if (a.title > b.title) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
 
-  // Функция для обработки ввода в поле поиска
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  // Функция для переключения направления сортировки
   const handleSortDirectionChange = () => {
     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
-  // Добавьте этот код, чтобы скрыть кнопку "Сбросить", когда категория не выбрана
   const isResetButtonVisible = selectedCategories.length > 0;
 
   return (
